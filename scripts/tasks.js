@@ -11,7 +11,9 @@ let form = document.querySelector("form");
 let newTarea = document.querySelector("#nuevaTarea");
 
 /* aca consulto el nombre del usuario y lo muestro en el HTML */
-const url = 'https://ctd-todo-api.herokuapp.com/v1/users/getMe';
+//const url = 'https://ctd-todo-api.herokuapp.com/v1/users/getMe';
+const url = "https://ctd-fe2-todo.herokuapp.com/v1/users/getMe";
+
 
 const settings ={
     method : 'GET',
@@ -47,7 +49,7 @@ let tareasPendientes = document.querySelector(".tareas-pendientes");
 let tareasTerminadas = document.querySelector(".tareas-terminadas");
 
 const promesa = new Promise ((resolve, reject)=>{
-    fetch('https://ctd-todo-api.herokuapp.com/v1/tasks',
+    fetch('https://ctd-fe2-todo.herokuapp.com/v1/tasks',
         {
         method : 'GET',
         headers:{
@@ -93,7 +95,7 @@ form.addEventListener('submit',function(e){
         "description": newTarea.value,
         "completed": false
         }
-        fetch('https://ctd-todo-api.herokuapp.com/v1/tasks',
+        fetch('https://ctd-fe2-todo.herokuapp.com/v1/tasks',
         {
             method : 'POST',
             body: JSON.stringify(user),
@@ -136,7 +138,7 @@ promesa.then(res => {
     checkTareas.forEach(function(checkTarea){
         checkTarea.addEventListener("click", ()=>{
             if(confirm("Termino esta tarea?")){
-                fetch(`https://ctd-todo-api.herokuapp.com/v1/tasks/${checkTarea.id}`,
+                fetch(`https://ctd-fe2-todo.herokuapp.com/v1/tasks/${checkTarea.id}`,
                 {
                     method : 'PUT',
                     body: JSON.stringify({"completed":true}),
@@ -164,7 +166,7 @@ promesa.then(res => {
     delTareas.forEach(function(delTarea){
         delTarea.addEventListener("click",()=>{
             if(confirm("Desea eliminar esta Tarea?")){
-                fetch(`https://ctd-todo-api.herokuapp.com/v1/tasks/${delTarea.id}`,
+                fetch(`https://ctd-fe2-todo.herokuapp.com/v1/tasks/${delTarea.id}`,
                 {
                     method : 'DELETE',
                     headers:{
@@ -190,7 +192,7 @@ promesa.then(res => {
         resTareas.forEach(function(resTarea){
             resTarea.addEventListener("click", ()=>{
                 if(confirm("Desea restablecer esta tarea?")){
-                    fetch(`https://ctd-todo-api.herokuapp.com/v1/tasks/${resTarea.id}`,
+                    fetch(`https://ctd-fe2-todo.herokuapp.com/v1/tasks/${resTarea.id}`,
                     {
                         method : 'PUT',
                         body: JSON.stringify({"completed":false}),

@@ -62,7 +62,8 @@ repPassword.addEventListener('keyup',function(){
 form.addEventListener('submit',function(e){
     e.preventDefault();
 
-    const url = "https://ctd-todo-api.herokuapp.com/v1/users";
+    //const url = "https://ctd-todo-api.herokuapp.com/v1/users";
+    const url = "https://ctd-fe2-todo.herokuapp.com/v1/users";
     
     if(!isValidnameAndSurname() || !isValidEmail() || !isValidPass() ){
         console.log("Datos Invalidos");

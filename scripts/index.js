@@ -3,7 +3,8 @@
 let form = document.querySelector('form');
 let email = document.querySelector('#inputEmail');
 let password = document.querySelector('#inputPassword');
-const url = "https://ctd-todo-api.herokuapp.com/v1/users/login";
+//const url = "https://ctd-todo-api.herokuapp.com/v1/users/login";
+const url = "https://ctd-fe2-todo.herokuapp.com/v1/users/login";
 
 /* Implementamos proceso al evento submit del form */
 
@@ -36,8 +37,8 @@ async function isUserExists(){
 
     if(res.jwt){
         console.log(res);
-        // localStorage.setItem('jwt',res.jwt);
-        // location.href = "mis-tareas.html";
+        localStorage.setItem('jwt',res.jwt);
+        location.href = "mis-tareas.html";
     }
     else{
         //informar el error 
