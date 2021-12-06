@@ -11,11 +11,26 @@ const url = "https://ctd-fe2-todo.herokuapp.com/v1/users/login";
 form.addEventListener('submit',function(e){
     e.preventDefault();
 
-    isUserExists();
+    const user ={
+        email : email.value,
+        password : password.value
+    };
 
+    postApi(url, user)
+    .then(res=>{
+        if(res.jwt){
+            console.log(res);
+            //localStorage.setItem('jwt',res.jwt);
+            //location.href = "mis-tareas.html";
+        }
+        else{
+            //informar el error
+            console.error(res);
+        }
+    })
 });
 
-async function postApi(url,user){
+async function postApi(url, user){
     const settings ={
         method : 'POST',
         body: JSON.stringify(user),
@@ -23,26 +38,7 @@ async function postApi(url,user){
             "Content-type" :"application/json; charset=UTF-8",
         }
     };
+
     return fetch(url,settings)
     .then(response => response.json());
-}
-
-async function isUserExists(){
-    const user ={
-        email : email.value,
-        password : password.value
-    };
-
-    let res = await postApi(url,user);
-
-    if(res.jwt){
-        console.log(res);
-        localStorage.setItem('jwt',res.jwt);
-        location.href = "mis-tareas.html";
-    }
-    else{
-        //informar el error 
-        console.log(res);
-    }
-
 }
