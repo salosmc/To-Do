@@ -1,28 +1,47 @@
+
 let form = document.querySelector("form");
 
-let namee = form[0];
-let surname = form[1];
-let email = form[2];
-let password = form[3];
-let repPassword = form[4];
-let botton = form[5];
+let namee = {
+    DOM : form.querySelector(".input-name"),
+    complet : false,
+    minCar : 4,
+    maxCar : 10
+};
+let surname = {
+    DOM : form.querySelector(".input-surname"),
+    complet : false,
+    minCar : 4,
+    maxCar : 10
+};
+let email = {
+    DOM : form.querySelector(".input-email"),
+    complet : false,
+    minCar : 4,
+    maxCar : 10
+}
+let password = {
+    DOM : form.querySelector(".input-password"),
+    complet : false,
+    minCar : 4,
+    maxCar : 10
+};
+let repPassword = {
+    DOM : form.querySelector(".input-repeatPassword"),
+    complet : false,
+    minCar : 4,
+    maxCar : 10
+}
 
-let nameCompleto = false;
-let surnameCompleto = false;
-let emailCompleto = false;
-let passCompleto = false;
-let recPassCompleto = false;
+let fieldsForm = [ namee, surname, email, password, repPassword ];
 
 let loginRegister = [];
-
 let mensajeErr = []
 
-
+let botton = form.querySelector("button");
 botton.setAttribute("disabled","true");
 
 function validate(){
     if(isCompletField()){
-        
         activarBoton();
     }else{
         desactivarBoton();
@@ -30,96 +49,96 @@ function validate(){
     }
 }
 
-const minCarField = 4;
-const maxCarField = 10;
+fieldsForm.forEach(function(element){
+    element.DOM.addEventListener('keyup', function(e){
+        element.complet = isLengthField(element.DOM.value.length, element.minCar, element.maxCar);
+        validate();
+        borderFieldClear(element.DOM);
+    })
+})
+// namee.addEventListener('keyup',function(e){
+//     nameCompleto = isStringField(e.key, namee.value.length, minCarField, maxCarField);
+//     validate();
+// });
 
+// surname.addEventListener('keyup',function(e){
+//     surnameCompleto = isStringField(e.key, surname.value.length, minCarField, maxCarField);
+//     validate();
+// });
 
-namee.addEventListener('keyup',function(e){
-    nameCompleto = isStringField(e.key, namee.value.length, minCarField, maxCarField);
-    validate();
-});
-
-surname.addEventListener('keyup',function(e){
-    surnameCompleto = isStringField(e.key, surname.value.length, minCarField, maxCarField);
-    validate();
-});
-
-email.addEventListener('keyup',function(){
-    emailCompleto = isLengthField(email.value.length, minCarField, maxCarField);
-    validate();
-});
-password.addEventListener('keyup',function(){
-    passCompleto = isLengthField(password.value.length, minCarField, maxCarField);
-    recPassCompleto = (password.value == repPassword.value);
-    validate();
-});
-repPassword.addEventListener('keyup',function(){
-    passCompleto = isLengthField(password.value.length, minCarField, maxCarField);
-    recPassCompleto = (password.value == repPassword.value);
-    validate();
-});
+// email.addEventListener('keyup',function(){
+//     emailCompleto = isLengthField(email.value.length, minCarField, maxCarField);
+//     validate();
+// });
+// password.addEventListener('keyup',function(){
+//     passCompleto = isLengthField(password.value.length, minCarField, maxCarField);
+//     recPassCompleto = (password.value == repPassword.value);
+//     validate();
+// });
+// repPassword.addEventListener('keyup',function(){
+//     passCompleto = isLengthField(password.value.length, minCarField, maxCarField);
+//     recPassCompleto = (password.value == repPassword.value);
+//     validate();
+// });
 
 form.addEventListener('submit',function(e){
     e.preventDefault();
 
     //const url = "https://ctd-todo-api.herokuapp.com/v1/users";
     const url = "https://ctd-fe2-todo.herokuapp.com/v1/users";
-    
+
     if(!isValidnameAndSurname() || !isValidEmail() || !isValidPass() ){
         console.log("Datos Invalidos");
     }else{
         const user = {
-            firstName : namee.value,
-            lastName: surname.value,
-            email: email.value,
-            password: password.value
+            firstName : namee.DOM.value,
+            lastName: surname.DOM.value,
+            email: email.DOM.value,
+            password: password.DOM.value
         }
 
-        const settings ={
-            method : 'POST',
-            body: JSON.stringify(user),
-            headers:{
-                "Content-type" :"application/json; charset=UTF-8",
+        postApi(url,user)
+        .then( res => {
+            console.log(res);
+            if(res.jwt){
+                console.log(res);
+                // location.href = "index.html";
+            }else{
+                console.error(res);
             }
-        };
-
-        fetch(url,settings)
-        .then((response) => {
-            console.log(response);
-            return response.json();
-        })
-        .then((data) => {
-            console.log(data);
-            if(data.jwt){
-                // const usuario ={
-                //     jwt : data.jwt,
-                //     user : user
-                // }
-                // localStorage.setItem('user',JSON.stringify(usuario)); // si quiero guardar al usuario en el LOCAL
-                location.href = "index.html";
-                
-            }
-
         });
-
-        // location.href = "mis-tareas.html";
     }
-
 });
 
 
 //---------------------- Funciones ------------------------
 
+
+async function postApi(url, user){
+    const settings ={
+        method : 'POST',
+        body: JSON.stringify(user),
+        headers:{
+            "Content-type" :"application/json; charset=UTF-8",
+        }
+    };
+
+    return fetch(url,settings)
+    .then(response => response.json());
+}
+
 function isValidnameAndSurname(){
-    if (nameCompleto && surnameCompleto){
-        namee.value = namee.value.toLowerCase();
-        namee.value = namee.value.charAt(0).toUpperCase() + namee.value.slice(1);
-        surname.value = surname.value.toLowerCase();
-        surname.value = surname.value.charAt(0).toUpperCase() + surname.value.slice(1);
+    if (isNaN(namee.DOM.value) && isNaN(surname.DOM.value)){
+        namee.DOM.value = namee.DOM.value.toLowerCase();
+        namee.DOM.value = namee.DOM.value.charAt(0).toUpperCase() + namee.DOM.value.slice(1);
+        surname.DOM.value = surname.DOM.value.toLowerCase();
+        surname.DOM.value = surname.DOM.value.charAt(0).toUpperCase() + surname.DOM.value.slice(1);
+        borderFieldOkey(namee.DOM);
+        borderFieldOkey(surname.DOM);
         return true;
     }else{
-
-        //setTimeout(function(){ alert("Hello"); }, 3000);
+        borderFieldFail(namee.DOM);
+        borderFieldFail(surname.DOM);
         return false;
     }
     
@@ -128,11 +147,12 @@ function isValidnameAndSurname(){
 function isValidEmail(){
     let refex = new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
     
-    if(emailCompleto && refex.test(email.value)){
-        email.value = email.value.toLowerCase();
+    if(email.complet && refex.test(email.DOM.value)){
+        email.DOM.value = email.DOM.value.toLowerCase();
+        borderFieldOkey(email.DOM);
         return true;
     }else{
-        //email.style.color = "red";
+        borderFieldFail(email.DOM);
         return false;
     }
     
@@ -141,10 +161,13 @@ function isValidEmail(){
 function isValidPass(){
     let refex = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])");
 
-    if(passCompleto && refex.test(password.value)){
+    if(password.complet && refex.test(password.DOM.value) && (password.DOM.value == repPassword.DOM.value) ){
+        borderFieldOkey(password.DOM);
+        borderFieldOkey(repPassword.DOM);
         return true;
     }else{
-        //password.style.color = "red";
+        borderFieldFail(password.DOM);
+        borderFieldFail(repPassword.DOM);
         return false;
     }
     
@@ -152,16 +175,20 @@ function isValidPass(){
 
 //--------------- Funciones Adicionales ---------
 
-function isStringField(key, length, min, max){
-    return (isNaN(key) && isLengthField(length, min, max));
-}
+// function isStringField(key, length, min, max){
+//     return (isNaN(key) && isLengthField(length, min, max));
+// }
 
 function isLengthField(length, min, max){
     return (length >=min && length <= max);
 }
 
 function isCompletField(){
-    return nameCompleto && surnameCompleto && emailCompleto && passCompleto && recPassCompleto;
+    let status = true ;
+    fieldsForm.forEach(function(element){
+        status = status && element.complet;
+    }) ;
+    return status;
 }
 
 function activarBoton(){
@@ -172,6 +199,16 @@ function activarBoton(){
 function desactivarBoton(){
     botton.setAttribute("disabled","true");
     botton.style.backgroundColor="#7898FF";
+}
+
+function borderFieldOkey(dom){
+    dom.style.border = "1px solid blue";
+}
+function borderFieldFail(dom){
+    dom.style.border = "1px solid red ";
+}
+function borderFieldClear(dom){
+    dom.style.border = "1px solid #F2F2F2 ";
 }
 
 /*
